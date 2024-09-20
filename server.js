@@ -56,7 +56,20 @@ app.put('/employees/:id', (req, res) => {
     });
 });
 
-// Add delete functionality
+// delete
+
+app.delete('/employees/:id', (req, res) => {
+    const { id } = req.params;
+    db.run("DELETE FROM employees WHERE id = ?", [id], function(err) {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        res.json({ message: `Employee with id ${id} deleted`, changes: this.changes });
+    });
+});
 
 app.listen(3001, () => {
     console.log('Server is running on port 3001');
